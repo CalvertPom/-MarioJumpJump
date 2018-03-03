@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
-import android.graphics.drawable.AnimationDrawable;
 
 public class Person {
     public static final int SPEED = 10;
@@ -16,8 +15,10 @@ public class Person {
     public int mPersonY;
     public int mPersonX;
     private Bitmap bitmap;
-    private AnimationDrawable anim;
 
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
     public Person(Paint paint, int radius, Bitmap bitmap) {
         this.mPaint = paint;
         this.mHeaderRadius = radius;

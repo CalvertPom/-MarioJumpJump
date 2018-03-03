@@ -23,7 +23,6 @@ import java.util.ArrayList;
  * 游戏布局
  */
 public class GameLayout extends View {
-
     //当前视图(GameLayout)的长和宽
     private int mLayoutWidth;
     private int mLayoutHeight;
@@ -31,7 +30,6 @@ public class GameLayout extends View {
     private Barrier mBarrier;
     //辅助绘制人物的对象
     private Person mPerson;
-
     //面板绘制的对象
     private Score mScore;
 
@@ -40,7 +38,6 @@ public class GameLayout extends View {
     private int radius = 50;
     //不断绘制的线程
     private Thread mThread;
-
     private MyHandler myHandler;
     private int mBarrierMoveSpeed = 8;
     //人物是否自动下落状态
@@ -51,6 +48,8 @@ public class GameLayout extends View {
     private int mPersonMoveSpeed = 20;
     //需要绘制的小人
     private Bitmap bitmap;
+    private Bitmap bitmapl;//左
+    private Bitmap bitmapr;//右
     //需要绘制的障碍
     private Bitmap bitplat;
     //画面中障碍物的位置信息
@@ -78,8 +77,7 @@ public class GameLayout extends View {
     //失败后，弹出的菜单，按钮的位置
     private RectF mRestartRectf;
     private RectF mQuiteRectf;
-    //按钮的宽度和高度，这里我省事没有转化为DP，都是直接用px，所以可能会
-    //产生适配上的问题。
+    //按钮的宽度和高度，这里我省事没有转化为DP，都是直接用px，所以可能会产生适配上的问题。
     private int mButtonWidth = 300;
     private int mButtonHeight = 120;
     private int Padding = 20;
@@ -103,6 +101,8 @@ public class GameLayout extends View {
 
         //读取本地的img图片
         bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.marios);
+        bitmapl = BitmapFactory.decodeResource(getResources(), R.drawable.mario4);
+        bitmapr = BitmapFactory.decodeResource(getResources(), R.drawable.mario1);
 
         //读取本地的img图片
         bitplat = BitmapFactory.decodeResource(getResources(), R.drawable.plat);
@@ -377,12 +377,9 @@ public class GameLayout extends View {
 
     //控制小人向左移动
     public void moveLeft() {
-        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.mario4);
+
         int x = mPerson.mPersonX;
-        int y = mPerson.mPersonY;
-        mPerson = new Person(mPaint, radius, bitmap);
-        mPerson.mPersonX = x;
-        mPerson.mPersonY = y;
+        mPerson.setBitmap(bitmapl);
         int dir = x - mPersonMoveSpeed;
         if (dir < 0)
             dir = 0;
@@ -397,13 +394,8 @@ public class GameLayout extends View {
      * 类似moveLeft
      */
     public void moveRight() {
-        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.mario1);
-        //mPerson = new Person(mPaint, radius, bitmap);
-        int y = mPerson.mPersonY;
         int x = mPerson.mPersonX;
-        mPerson = new Person(mPaint, radius, bitmap);
-        mPerson.mPersonX = x;
-        mPerson.mPersonY = y;
+        mPerson.setBitmap(bitmapr);
         int dir = x + mPersonMoveSpeed;
         if (dir > mLayoutWidth - radius * 2)
             dir = mLayoutWidth - radius * 2;
@@ -435,7 +427,6 @@ public class GameLayout extends View {
                 if (mRestartRectf.contains(x, y)) {
                     restartGame();
                 } else if (mQuiteRectf.contains(x, y)) {//触摸到退出按钮
-                    // Toast.makeText(getContext(), "退出到主菜单", Toast.LENGTH_SHORT).show();
                     System.exit(0);
 
                 }
