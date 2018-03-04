@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         left = findViewById(R.id.left);
         right = findViewById(R.id.right);
         mus = findViewById(R.id.music);
-         
+        Music.play(MainActivity.this,R.raw.bgm4);
         left.setOnTouchListener(new OnContinueClickListener() {
             @Override
             public void handleClickEvent(View view) {
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
             public void handleClickEvent(View view) {
                 isMus =!isMus;
                 if(isMus ==true){
-                    Music.play(MainActivity.this,R.raw.bgm3);
+                    Music.play(MainActivity.this,R.raw.bgm4);
                     mus.setBackgroundResource(R.drawable.stopm);
                 }else if(isMus==false){
                     Music.stop(MainActivity.this);
