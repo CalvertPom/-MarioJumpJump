@@ -1,6 +1,5 @@
 package com.game.pxc.mario;
 
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -14,8 +13,8 @@ public class MainActivity extends AppCompatActivity {
 
     private View left;
     private View right;
-    private Thread thread;
-    private static MediaPlayer mp = null;
+   // private Thread thread;
+   // private static MediaPlayer mp = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,13 +23,13 @@ public class MainActivity extends AppCompatActivity {
         mGameLayout = (GameLayout) findViewById(R.id.game);
         left = findViewById(R.id.left);
         right = findViewById(R.id.right);
-        thread = new Thread(new Runnable() {
+       /* thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 playBGSound();
             }
         });
-        thread.start();
+       thread.start();*/
 
         left.setOnTouchListener(new OnContinueClickListener() {
             @Override
@@ -47,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
+/*
     private void playBGSound() {
         if (mp != null) {
             mp.release();
@@ -67,18 +66,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
+*/
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mp != null) {
+      /*  if (mp != null) {
             mp.stop();
             mp.release();
             mp = null;
         }
         if (thread != null) {
             thread = null;
-        }
+        }*/
         mGameLayout.stop();
         super.onDestroy();
     }

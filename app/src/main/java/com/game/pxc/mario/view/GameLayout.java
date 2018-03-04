@@ -44,17 +44,25 @@ public class GameLayout extends View {
     private boolean isAutoFall;
     //游戏是否正在运行
     private boolean isRunning;
+
     //人物左右移动的速度
     private int mPersonMoveSpeed = 20;
     //需要绘制的小人
     private Bitmap bitmap;
-    private Bitmap bitmapl;//左
-    private Bitmap bitmapr;//右
+    private Bitmap bitmapl = BitmapFactory.decodeResource(getResources(), R.drawable.mario4);//左
+    private Bitmap bitmapr = BitmapFactory.decodeResource(getResources(), R.drawable.mario1);//右
+
     //需要绘制的障碍
     private Bitmap bitplat;
+    private Bitmap bitplatd;//会断
+    private Bitmap bitplatdd;//断了的
+    //当前的障碍物类型
+    private int mType = 1;
     //画面中障碍物的位置信息
     private ArrayList<Integer> mBarrierXs;
     private ArrayList<Integer> mBarrierYs;
+    //画面中障碍物的类型信息
+    private ArrayList<Integer> mBarrierTs;
     //障碍物起始和产生障碍的间隔
     private int mBarrierStartY = 500;
     private int mBarrierInterval = 500;
@@ -68,7 +76,7 @@ public class GameLayout extends View {
 
     //重力加速度
     public static final float G = 9.8f;
-
+    int acc=0;
     //总得分
     private int mTotalScore;
     //份数版块的文字大小
@@ -98,21 +106,21 @@ public class GameLayout extends View {
         mPaint.setAntiAlias(true);
         mPaint.setColor(Color.GRAY);
         mPaint.setStrokeWidth(10);
-
         //读取本地的img图片
         bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.marios);
-        bitmapl = BitmapFactory.decodeResource(getResources(), R.drawable.mario4);
-        bitmapr = BitmapFactory.decodeResource(getResources(), R.drawable.mario1);
-
         //读取本地的img图片
         bitplat = BitmapFactory.decodeResource(getResources(), R.drawable.plat);
-        //默认开始自动下落
+        bitplatd = BitmapFactory.decodeResource(getResources(), R.drawable.dplat);
+        bitplatdd = BitmapFactory.decodeResource(getResources(), R.drawable.ddplat);
+        //默认开始自动下落//0不落         1下落   2遇到假砖，碎砖继续落
         isAutoFall = true;
         myHandler = new MyHandler();
         //用来记录画面中，每一个障碍物的x坐标
         mBarrierXs = new ArrayList<>();
         //和上面的x对应的每个障碍物的y坐标
         mBarrierYs = new ArrayList<>();
+        //用来记录画面中，每一个障碍物的类型
+        mBarrierTs = new ArrayList<>();
         //将文字大小转化成DP
         mTextSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, mTextSize, getResources().getDisplayMetrics());
         //启动游戏
@@ -130,6 +138,7 @@ public class GameLayout extends View {
         mLayoutHeight = getMeasuredHeight();
         //根据视图宽高，初始化障碍物的信息
         mBarrier = new Barrier(mLayoutWidth, mPaint, bitplat);
+//      mBarrier = new Barrier(mLayoutWidth, mPaint, bitplat, mType);
         mBarrier.setHeight(mBarrierHeight);
         //创建人物绘制类对象
         mPerson = new Person(mPaint, radius, bitmap);
@@ -178,8 +187,6 @@ public class GameLayout extends View {
 
     /**
      * 绘制结束弹出框的背景区域
-     *
-     * @param canvas
      */
     private void drawPanel(Canvas canvas) {
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -189,8 +196,6 @@ public class GameLayout extends View {
 
     /**
      * 绘制Game over文字
-     *
-     * @param canvas
      */
     private void notifyGameOver(Canvas canvas) {
 
@@ -252,9 +257,18 @@ public class GameLayout extends View {
             // 否则就随机生成新的坐标信息添加到数组中
             if (i < mBarrierXs.size()) {
                 mBarrier.mPositionX = mBarrierXs.get(i);
+                mBarrier.mType = mBarrierTs.get(i);
+                if (mBarrier.mType == 7) {//假砖
+                    mBarrier.setBitmap(bitplatd);
+                } else if (mBarrier.mType != 7) {//真砖
+                    mBarrier.setBitmap(bitplat);
+                }
+
             } else {
                 mBarrier.mPositionX = PositionUtil.getRangeX(mLayoutWidth);
+                mBarrier.mType = PositionUtil.getRangeT();//设置Barrier类型随机数
                 mBarrierXs.add(mBarrier.mPositionX);
+                mBarrierTs.add(mBarrier.mType);
             }
             //障碍物的y坐标
             mBarrier.mPositionY = mBarrierStartY + mBarrierInterval * i;
@@ -271,14 +285,14 @@ public class GameLayout extends View {
 
     private void generatePerson(Canvas canvas) {
         //如果小人在自动下落
-        if (isAutoFall) {
+        if (isAutoFall) {//落
             //自动下落绘制
-//            mPerson.autoFallY();
             mFallTime += 20;
+            mFallTime+=acc;
             //根据重力加速度计算小人下落的位置
             mPerson.mPersonY += mFallTime / 1000 * G;
             mPerson.draw(canvas);
-        } else {
+        } else {//不落
 
             //小人被挡住，下落的时间重置
             mFallTime = 0;
@@ -288,6 +302,7 @@ public class GameLayout extends View {
                 //设置小人被阻挡的位置，被进行绘制
                 mPerson.mPersonY = mBarrierYs.get(mTouchIndex) - 2 * radius;
                 mPerson.draw(canvas);
+
             }
         }
     }
@@ -300,10 +315,21 @@ public class GameLayout extends View {
             //碰撞检测
             if (isTouchBarrier(mBarrierXs.get(i), mBarrierYs.get(i))) {
                 mTouchIndex = i;
-                isAutoFall = false;
+                if (mBarrierTs.get(i) != 7) {
+                    acc=0;
+                    isAutoFall = false;//不落
+                } else {
+                    if (mBarrierTs.get(i) == 7) {
+                        mBarrier.setBitmap(bitplatdd);
+                        acc=520;
+                    isAutoFall = true;
+
+                    }
+                }
             }
         }
     }
+
 
     private boolean checkIsGameOver() {
         return mPerson.mPersonY < 0 || mPerson.mPersonY > mLayoutHeight - 2 * radius;
@@ -343,8 +369,10 @@ public class GameLayout extends View {
                     if (mBarrierStartY <= -mBarrierInterval - mBarrierHeight) {
                         mBarrierStartY = -mBarrierHeight;
                         //删除刚消失的障碍物坐标信息
-                        if (mBarrierXs.size() > 0)
+                        if (mBarrierXs.size() > 0) {
                             mBarrierXs.remove(0);
+                            mBarrierTs.remove(0);
+                        }
                         //得分++
                         mTotalScore++;
                         //小球碰撞位置--
@@ -442,11 +470,13 @@ public class GameLayout extends View {
     private void restartGame() {
         mBarrierXs.clear();
         mBarrierYs.clear();
+        mBarrierTs.clear();
         mBarrierStartY = 500;
         mPerson.mPersonY = 300;
         mPerson.mPersonX = mLayoutWidth / 2;
         mTotalScore = 0;
         isAutoFall = true;
+        acc=0;
         mFallTime = 0;
         isRunning = true;
         startGame();
