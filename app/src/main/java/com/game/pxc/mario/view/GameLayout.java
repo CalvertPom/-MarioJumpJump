@@ -42,13 +42,15 @@ public class GameLayout extends View {
     private int mBarrierMoveSpeed = 8;
     //人物是否自动下落状态
     private boolean isAutoFall;
+
+
     //游戏是否正在运行
     private boolean isRunning;
 
     //人物左右移动的速度
     private int mPersonMoveSpeed = 20;
     //需要绘制的小人
-    private Bitmap bitmap=BitmapFactory.decodeResource(getResources(), R.drawable.marios);
+    private Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.marios);
     private Bitmap bitmapl = BitmapFactory.decodeResource(getResources(), R.drawable.mario4);//左
     private Bitmap bitmapr = BitmapFactory.decodeResource(getResources(), R.drawable.mario1);//右
 
@@ -274,7 +276,8 @@ public class GameLayout extends View {
         //如果小人在自动下落
         if (isAutoFall) {//落
             //自动下落绘制
-            mFallTime += 20;
+            // mFallTime += 20;
+            mFallTime += 40;
             mFallTime += acc;
             //根据重力加速度计算小人下落的位置
             mPerson.mPersonY += mFallTime / 1000 * G;
