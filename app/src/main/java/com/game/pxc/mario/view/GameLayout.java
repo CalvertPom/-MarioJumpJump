@@ -46,7 +46,6 @@ public class GameLayout extends View {
 
     //游戏是否正在运行
     private boolean isRunning;
-
     //人物左右移动的速度
     private int mPersonMoveSpeed = 20;
     //需要绘制的小人

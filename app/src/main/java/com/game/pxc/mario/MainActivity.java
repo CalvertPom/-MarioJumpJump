@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
         //隐藏状态栏
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         setContentView(R.layout.activity_main);
         mGameLayout = (GameLayout) findViewById(R.id.game);
         left = findViewById(R.id.left);
