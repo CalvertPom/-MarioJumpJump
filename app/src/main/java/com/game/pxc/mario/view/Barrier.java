@@ -40,14 +40,6 @@ public class Barrier {
         this.mWidth = mScreenWidth / 4;
         this.bitmap = bitmap;
     }
-  /*  public Barrier(int screenWidth, Paint paint, Bitmap bitmap,int ttype) {
-        this.mScreenWidth = screenWidth;
-        this.mPaint = paint;
-        this.mWidth = mScreenWidth / 4;
-        this.bitmap = bitmap;
-        this.mType=ttype;
-    }*/
-
     /**
      * 绘制一个黑色矩形
      */

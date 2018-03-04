@@ -48,14 +48,14 @@ public class GameLayout extends View {
     //人物左右移动的速度
     private int mPersonMoveSpeed = 20;
     //需要绘制的小人
-    private Bitmap bitmap;
+    private Bitmap bitmap=BitmapFactory.decodeResource(getResources(), R.drawable.marios);
     private Bitmap bitmapl = BitmapFactory.decodeResource(getResources(), R.drawable.mario4);//左
     private Bitmap bitmapr = BitmapFactory.decodeResource(getResources(), R.drawable.mario1);//右
 
     //需要绘制的障碍
     private Bitmap bitplat;
     private Bitmap bitplatd;//会断
-    private Bitmap bitplatdd;//断了的
+    //    private Bitmap bitplatdd;//断了的
     //当前的障碍物类型
     private int mType = 1;
     //画面中障碍物的位置信息
@@ -76,7 +76,7 @@ public class GameLayout extends View {
 
     //重力加速度
     public static final float G = 9.8f;
-    int acc=0;
+    int acc = 0;
     //总得分
     private int mTotalScore;
     //份数版块的文字大小
@@ -107,11 +107,9 @@ public class GameLayout extends View {
         mPaint.setColor(Color.GRAY);
         mPaint.setStrokeWidth(10);
         //读取本地的img图片
-        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.marios);
-        //读取本地的img图片
         bitplat = BitmapFactory.decodeResource(getResources(), R.drawable.plat);
         bitplatd = BitmapFactory.decodeResource(getResources(), R.drawable.dplat);
-        bitplatdd = BitmapFactory.decodeResource(getResources(), R.drawable.ddplat);
+        // bitplatdd = BitmapFactory.decodeResource(getResources(), R.drawable.ddplat);
         //默认开始自动下落//0不落         1下落   2遇到假砖，碎砖继续落
         isAutoFall = true;
         myHandler = new MyHandler();
@@ -223,8 +221,6 @@ public class GameLayout extends View {
 
     /**
      * 绘制分数面板
-     *
-     * @param canvas
      */
     private void generateScore(Canvas canvas) {
         mPaint.setStyle(Paint.Style.FILL);
@@ -236,16 +232,7 @@ public class GameLayout extends View {
         mScore.drawScore(canvas, mTotalScore + "");
     }
 
-    /**
-     * 据初始位置，生成障碍物,难点
-     * 1.绘制时，每一个障碍物间的距离是一致的
-     * 2.绘制时，都是从第一个障碍物开始绘制
-     * 3.循环绘制，并把障碍物的x，y位置，分别保存在数组中
-     * 4.障碍物逐渐上升，当障碍物超出边界时，我们删除数组中保存的
-     * 第一个位置的x，但是保持原有下面已经出现过得障碍物x的位置
-     * 并在最后添加新的障碍物的位置；y位置，每次都重新生成，重新
-     * 保存在数组中
-     */
+
     private void generateBarrier(Canvas canvas) {
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(Color.DKGRAY);
@@ -288,7 +275,7 @@ public class GameLayout extends View {
         if (isAutoFall) {//落
             //自动下落绘制
             mFallTime += 20;
-            mFallTime+=acc;
+            mFallTime += acc;
             //根据重力加速度计算小人下落的位置
             mPerson.mPersonY += mFallTime / 1000 * G;
             mPerson.draw(canvas);
@@ -316,13 +303,12 @@ public class GameLayout extends View {
             if (isTouchBarrier(mBarrierXs.get(i), mBarrierYs.get(i))) {
                 mTouchIndex = i;
                 if (mBarrierTs.get(i) != 7) {
-                    acc=0;
+                    acc = 0;
                     isAutoFall = false;//不落
                 } else {
                     if (mBarrierTs.get(i) == 7) {
-                        mBarrier.setBitmap(bitplatdd);
-                        acc=520;
-                    isAutoFall = true;
+                        acc = 520;
+                        isAutoFall = true;
 
                     }
                 }
@@ -472,11 +458,12 @@ public class GameLayout extends View {
         mBarrierYs.clear();
         mBarrierTs.clear();
         mBarrierStartY = 500;
+        mPerson.setBitmap(bitmap);
         mPerson.mPersonY = 300;
         mPerson.mPersonX = mLayoutWidth / 2;
         mTotalScore = 0;
         isAutoFall = true;
-        acc=0;
+        acc = 0;
         mFallTime = 0;
         isRunning = true;
         startGame();

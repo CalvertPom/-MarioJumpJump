@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.game.pxc.mario.util.Music;
 import com.game.pxc.mario.util.OnContinueClickListener;
 import com.game.pxc.mario.view.GameLayout;
 
@@ -13,8 +14,11 @@ public class MainActivity extends AppCompatActivity {
 
     private View left;
     private View right;
-   // private Thread thread;
-   // private static MediaPlayer mp = null;
+    private View mus;
+
+
+
+    private boolean isMus = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,62 +27,34 @@ public class MainActivity extends AppCompatActivity {
         mGameLayout = (GameLayout) findViewById(R.id.game);
         left = findViewById(R.id.left);
         right = findViewById(R.id.right);
-       /* thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                playBGSound();
-            }
-        });
-       thread.start();*/
-
+        mus = findViewById(R.id.music);
+        Music.play(MainActivity.this,R.raw.bgm3);
         left.setOnTouchListener(new OnContinueClickListener() {
             @Override
             public void handleClickEvent(View view) {
                 mGameLayout.moveLeft();
             }
         });
-
-
         right.setOnTouchListener(new OnContinueClickListener() {
             @Override
             public void handleClickEvent(View view) {
                 mGameLayout.moveRight();
             }
         });
-    }
-/*
-    private void playBGSound() {
-        if (mp != null) {
-            mp.release();
-        }
-        mp = MediaPlayer.create(MainActivity.this, R.raw.bgm2);
-        mp.start();
-        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        mus.setOnTouchListener(new OnContinueClickListener() {
             @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                try {
-                    Thread.sleep(5000);
-                    playBGSound();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            public void handleClickEvent(View view) {
+                isMus =!isMus;
+                if(isMus ==true){
+                    Music.play(MainActivity.this,R.raw.bgm3);
+                    mus.setBackgroundResource(R.drawable.stopm);
+                }else if(isMus==false){
+                    Music.stop(MainActivity.this);
+                    mus.setBackgroundResource(R.drawable.startm);
                 }
-
             }
         });
     }
-*/
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-      /*  if (mp != null) {
-            mp.stop();
-            mp.release();
-            mp = null;
-        }
-        if (thread != null) {
-            thread = null;
-        }*/
-        mGameLayout.stop();
-        super.onDestroy();
-    }
+
+
 }

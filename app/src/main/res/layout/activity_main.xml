@@ -25,17 +25,23 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:alpha="0.1 "
+            android:alpha="0.5 "
             android:fitsSystemWindows="true"
             android:src="@drawable/ic_left"
             android:text="←" />
-
+        <Button
+            android:id="@+id/music"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:alpha="0.5 "
+            android:fitsSystemWindows="true"
+            android:background="@drawable/stopm" />
         <Button
             android:id="@+id/right"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:alpha="0.1 "
+            android:alpha="0.5 "
             android:fitsSystemWindows="true"
             android:src="@drawable/ic_left"
             android:text="→" />

@@ -11,8 +11,6 @@ public class PositionUtil {
     }
     public  static int getRangeT(){
         double rate = Math.random();
-        rate = Math.random();
-
         return (int) (rate*10);
     }
 }
