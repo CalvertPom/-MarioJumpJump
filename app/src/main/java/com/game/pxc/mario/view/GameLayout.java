@@ -55,8 +55,8 @@ public class GameLayout extends View {
 
     //需要绘制的障碍
     private Bitmap bitplat;
-    private Bitmap bitplatd;//会断
-    //    private Bitmap bitplatdd;//断了的
+    private Bitmap bitplatd;//加速
+
     //当前的障碍物类型
     private int mType = 1;
     //画面中障碍物的位置信息
@@ -110,7 +110,6 @@ public class GameLayout extends View {
         //读取本地的img图片
         bitplat = BitmapFactory.decodeResource(getResources(), R.drawable.plat);
         bitplatd = BitmapFactory.decodeResource(getResources(), R.drawable.dplat);
-        // bitplatdd = BitmapFactory.decodeResource(getResources(), R.drawable.ddplat);
         //默认开始自动下落//0不落         1下落   2遇到假砖，碎砖继续落
         isAutoFall = true;
         myHandler = new MyHandler();
@@ -137,7 +136,6 @@ public class GameLayout extends View {
         mLayoutHeight = getMeasuredHeight();
         //根据视图宽高，初始化障碍物的信息
         mBarrier = new Barrier(mLayoutWidth, mPaint, bitplat);
-//      mBarrier = new Barrier(mLayoutWidth, mPaint, bitplat, mType);
         mBarrier.setHeight(mBarrierHeight);
         //创建人物绘制类对象
         mPerson = new Person(mPaint, radius, bitmap);

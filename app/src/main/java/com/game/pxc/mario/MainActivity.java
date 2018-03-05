@@ -19,8 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private View mus;
 
 
-
-    private boolean isMus = true;
+    private boolean isMus = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         left = findViewById(R.id.left);
         right = findViewById(R.id.right);
         mus = findViewById(R.id.music);
-        Music.play(MainActivity.this,R.raw.bgm4);
+        Music.play(MainActivity.this, R.raw.bgm4);
         left.setOnTouchListener(new OnContinueClickListener() {
             @Override
             public void handleClickEvent(View view) {
@@ -49,20 +48,23 @@ public class MainActivity extends AppCompatActivity {
                 mGameLayout.moveRight();
             }
         });
-        mus.setOnTouchListener(new OnContinueClickListener() {
+        mus.setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public void handleClickEvent(View view) {
-                isMus =!isMus;
-                if(isMus ==true){
-                    Music.play(MainActivity.this,R.raw.bgm4);
+            public void onClick(View v) {
+                // isMus =!isMus;
+                if (isMus == true) {
+                    Music.play(MainActivity.this, R.raw.bgm4);
                     mus.setBackgroundResource(R.drawable.stopm);
-                }else if(isMus==false){
+                    isMus = false;
+                } else if (isMus == false) {
                     Music.stop(MainActivity.this);
                     mus.setBackgroundResource(R.drawable.startm);
+                    isMus = true;
                 }
             }
         });
+
+
     }
-
-
 }
