@@ -32,20 +32,20 @@ public class GameLayout extends View {
     private Person mPerson;
     //面板绘制的对象
     private Score mScore;
-
+//画笔
     private Paint mPaint;
     //小人的圆形半径
     private int radius = 50;
     //不断绘制的线程
     private Thread mThread;
     private MyHandler myHandler;
-    private int mBarrierMoveSpeed = 8;
+    //障碍上升加速度
+    private int mBarrierMoveSpeed = 10;//8简单10普通12难15炼狱
     //人物是否自动下落状态
     private boolean isAutoFall;
-
-
     //游戏是否正在运行
     private boolean isRunning;
+
     //人物左右移动的速度
     private int mPersonMoveSpeed = 20;
     //需要绘制的小人
@@ -77,6 +77,7 @@ public class GameLayout extends View {
 
     //重力加速度
     public static final float G = 9.8f;
+    //特殊砖加速
     int acc = 0;
     //总得分
     private int mTotalScore;
@@ -110,7 +111,7 @@ public class GameLayout extends View {
         //读取本地的img图片
         bitplat = BitmapFactory.decodeResource(getResources(), R.drawable.plat);
         bitplatd = BitmapFactory.decodeResource(getResources(), R.drawable.dplat);
-        //默认开始自动下落//0不落         1下落   2遇到假砖，碎砖继续落
+        //默认开始自动下落
         isAutoFall = true;
         myHandler = new MyHandler();
         //用来记录画面中，每一个障碍物的x坐标
@@ -125,6 +126,7 @@ public class GameLayout extends View {
         isRunning = true;
         startGame();
     }
+
 
 
     @Override
@@ -144,7 +146,33 @@ public class GameLayout extends View {
         //初始化分数绘制对象
         mScore = new Score(mPaint);
         mScore.x = mLayoutWidth / 2 - mScore.panelWidth / 2;
-
+        // 游戏开始前，弹出难度选择菜单，按钮的位置
+        /*
+        private RectF mEasyRectf;//简单8
+        private RectF mNormalRectf;//普通10
+        private RectF mHardRectf;//困难12
+         private RectF mCrazyRectf;//炼狱15
+        //菜单上容易按钮
+        int eX = mLayoutWidth / 2 - mButtonWidth / 2;
+        int eY = mLayoutHeight / 2 - mButtonHeight * 2 - 20;
+        //  int eY=mScore.y + mScore.panelHeight+mButtonHeight*8;
+        mEasyRectf = new RectF(eX, eY, eX + mButtonWidth, eY + mButtonHeight);
+        //菜单上普通按钮
+        int nX = mLayoutWidth / 2 - mButtonWidth / 2;
+        // int nY = mLayoutHeight / 2 - mButtonHeight - 10;
+        int nY = eY + mButtonHeight * 3 / 2;
+        mNormalRectf = new RectF(nX, nY, nX + mButtonWidth, nY + mButtonHeight);
+        //菜单上困难按钮
+        int hX = mLayoutWidth / 2 - mButtonWidth / 2;
+        // int hY = mLayoutHeight / 2 + mButtonHeight + 10;
+        int hY = nY + mButtonHeight * 3 / 2;
+        mHardRectf = new RectF(hX, hY, hX + mButtonWidth, hY + mButtonHeight);
+        //菜单上炼狱按钮
+        int cX = mLayoutWidth / 2 - mButtonWidth / 2;
+        //int cY = mLayoutHeight / 2 + mButtonHeight * 2 + 20;
+        int cY = hY + mButtonHeight * 3 / 2;
+        mCrazyRectf = new RectF(cX, cY, cX + mButtonWidth, cY + mButtonHeight);
+ */
         //菜单上重启按钮的左边坐标,mRestartRectf是重启按钮绘制区域
         int rX = mLayoutWidth / 2 - 20 - mButtonWidth;
         int rY = mLayoutHeight * 3 / 5;
@@ -181,6 +209,21 @@ public class GameLayout extends View {
             drawButton(canvas, mQuiteRectf, "退出", Color.parseColor("#ae999999"), Color.WHITE);
         }
     }
+/*
+    //绘制级别弹出框的背景区域
+    private void drawLevelPanel(Canvas canvas) {
+
+        mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        mPaint.setColor(Color.parseColor("#8e333333"));
+        canvas.drawRoundRect(new RectF(mEasyRectf.left - Padding * 8, mEasyRectf.top - Padding * 8,
+                mCrazyRectf.right + Padding * 8, mCrazyRectf.bottom + Padding * 5), Padding, Padding, mPaint);
+        mPaint.setTextAlign(Paint.Align.CENTER);
+        mPaint.setTextSize(mTextSize * 1.2f);
+        mPaint.setColor(Color.parseColor("#FFFFFF"));
+        mPaint.setFakeBoldText(false);
+        mPaint.setStyle(Paint.Style.FILL);
+        canvas.drawText("请选择难度级别", mLayoutWidth / 2, mEasyRectf.top - Padding * 2, mPaint);
+    }*/
 
     /**
      * 绘制结束弹出框的背景区域
@@ -244,9 +287,9 @@ public class GameLayout extends View {
             if (i < mBarrierXs.size()) {
                 mBarrier.mPositionX = mBarrierXs.get(i);
                 mBarrier.mType = mBarrierTs.get(i);
-                if (mBarrier.mType == 7) {//假砖
+                if (mBarrier.mType == 7) {//加速砖
                     mBarrier.setBitmap(bitplatd);
-                } else if (mBarrier.mType != 7) {//真砖
+                } else if (mBarrier.mType != 7) {//普通砖
                     mBarrier.setBitmap(bitplat);
                 }
 
@@ -323,10 +366,6 @@ public class GameLayout extends View {
 
     /**
      * 碰撞检测
-     *
-     * @param x 障碍物x坐标
-     * @param y 障碍物y坐标
-     * @return
      */
     private boolean isTouchBarrier(int x, int y) {
         boolean res = false;
@@ -361,6 +400,7 @@ public class GameLayout extends View {
                         }
                         //得分++
                         mTotalScore++;
+
                         //小球碰撞位置--
                         mTouchIndex--;
                     }
@@ -424,6 +464,7 @@ public class GameLayout extends View {
     }
 
     public void stop() {
+        //isReady = false;
         isRunning = false;
     }
 
