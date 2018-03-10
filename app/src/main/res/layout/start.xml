@@ -13,8 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
 
-        android:background="#00EEEE"
-        app:blockColor="#E0FFFF"
+        android:background="#EEEE00"
+        app:blockColor="#EE0000"
 
         app:lineNumber="3"
         app:fixBlock_Angle="5"
@@ -25,7 +25,7 @@
         app:initPosition="0"
 
         app:isClock_Wise="false"
-        app:moveSpeed="500"
+        app:moveSpeed="600"
         app:move_Interpolator="@android:anim/bounce_interpolator"
 
         tools:layout_editor_absoluteY="8dp"

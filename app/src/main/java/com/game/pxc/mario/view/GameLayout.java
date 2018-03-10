@@ -32,7 +32,7 @@ public class GameLayout extends View {
     private Person mPerson;
     //面板绘制的对象
     private Score mScore;
-//画笔
+    //画笔
     private Paint mPaint;
     //小人的圆形半径
     private int radius = 50;
@@ -43,16 +43,25 @@ public class GameLayout extends View {
     private int mBarrierMoveSpeed = 10;//8简单10普通12难15炼狱
     //人物是否自动下落状态
     private boolean isAutoFall;
+    //人物左右移动的速度
+    private int mPersonMoveSpeed = 20;
+    //怪物下落
+    private boolean isEnemyFall;
+    //敌人移动的速度
+    private int mEnemyMoveSpeed = 20;
     //游戏是否正在运行
     private boolean isRunning;
 
-    //人物左右移动的速度
-    private int mPersonMoveSpeed = 20;
-    //需要绘制的小人
-    private Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.marios);
-    private Bitmap bitmapl = BitmapFactory.decodeResource(getResources(), R.drawable.mario4);//左
-    private Bitmap bitmapr = BitmapFactory.decodeResource(getResources(), R.drawable.mario1);//右
 
+
+    private Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.marios);
+    private Bitmap bitmap4 = BitmapFactory.decodeResource(getResources(), R.drawable.mario4);//左
+    private Bitmap bitmap5 = BitmapFactory.decodeResource(getResources(), R.drawable.mario5);//左
+    private Bitmap bitmap6 = BitmapFactory.decodeResource(getResources(), R.drawable.mario6);//左
+    private Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.mario1);//右
+    private Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), R.drawable.mario2);//右
+    private Bitmap bitmap3 = BitmapFactory.decodeResource(getResources(), R.drawable.mario3);//右
+    private Bitmap bitmapd = BitmapFactory.decodeResource(getResources(), R.drawable.mariod);//输了
     //需要绘制的障碍
     private Bitmap bitplat;
     private Bitmap bitplatd;//加速
@@ -120,13 +129,13 @@ public class GameLayout extends View {
         mBarrierYs = new ArrayList<>();
         //用来记录画面中，每一个障碍物的类型
         mBarrierTs = new ArrayList<>();
+
         //将文字大小转化成DP
         mTextSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, mTextSize, getResources().getDisplayMetrics());
         //启动游戏
         isRunning = true;
         startGame();
     }
-
 
 
     @Override
@@ -146,33 +155,7 @@ public class GameLayout extends View {
         //初始化分数绘制对象
         mScore = new Score(mPaint);
         mScore.x = mLayoutWidth / 2 - mScore.panelWidth / 2;
-        // 游戏开始前，弹出难度选择菜单，按钮的位置
-        /*
-        private RectF mEasyRectf;//简单8
-        private RectF mNormalRectf;//普通10
-        private RectF mHardRectf;//困难12
-         private RectF mCrazyRectf;//炼狱15
-        //菜单上容易按钮
-        int eX = mLayoutWidth / 2 - mButtonWidth / 2;
-        int eY = mLayoutHeight / 2 - mButtonHeight * 2 - 20;
-        //  int eY=mScore.y + mScore.panelHeight+mButtonHeight*8;
-        mEasyRectf = new RectF(eX, eY, eX + mButtonWidth, eY + mButtonHeight);
-        //菜单上普通按钮
-        int nX = mLayoutWidth / 2 - mButtonWidth / 2;
-        // int nY = mLayoutHeight / 2 - mButtonHeight - 10;
-        int nY = eY + mButtonHeight * 3 / 2;
-        mNormalRectf = new RectF(nX, nY, nX + mButtonWidth, nY + mButtonHeight);
-        //菜单上困难按钮
-        int hX = mLayoutWidth / 2 - mButtonWidth / 2;
-        // int hY = mLayoutHeight / 2 + mButtonHeight + 10;
-        int hY = nY + mButtonHeight * 3 / 2;
-        mHardRectf = new RectF(hX, hY, hX + mButtonWidth, hY + mButtonHeight);
-        //菜单上炼狱按钮
-        int cX = mLayoutWidth / 2 - mButtonWidth / 2;
-        //int cY = mLayoutHeight / 2 + mButtonHeight * 2 + 20;
-        int cY = hY + mButtonHeight * 3 / 2;
-        mCrazyRectf = new RectF(cX, cY, cX + mButtonWidth, cY + mButtonHeight);
- */
+
         //菜单上重启按钮的左边坐标,mRestartRectf是重启按钮绘制区域
         int rX = mLayoutWidth / 2 - 20 - mButtonWidth;
         int rY = mLayoutHeight * 3 / 5;
@@ -199,7 +182,9 @@ public class GameLayout extends View {
         //检查小人是否超出边界，判断游戏是否结束
         isRunning = !checkIsGameOver();
         //如果游戏结束
+
         if (!isRunning) {
+            deadPerson(canvas);
             //绘制面板
             drawPanel(canvas);
             //绘制游戏结束数字
@@ -209,21 +194,22 @@ public class GameLayout extends View {
             drawButton(canvas, mQuiteRectf, "退出", Color.parseColor("#ae999999"), Color.WHITE);
         }
     }
-/*
-    //绘制级别弹出框的背景区域
-    private void drawLevelPanel(Canvas canvas) {
 
-        mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        mPaint.setColor(Color.parseColor("#8e333333"));
-        canvas.drawRoundRect(new RectF(mEasyRectf.left - Padding * 8, mEasyRectf.top - Padding * 8,
-                mCrazyRectf.right + Padding * 8, mCrazyRectf.bottom + Padding * 5), Padding, Padding, mPaint);
-        mPaint.setTextAlign(Paint.Align.CENTER);
-        mPaint.setTextSize(mTextSize * 1.2f);
-        mPaint.setColor(Color.parseColor("#FFFFFF"));
-        mPaint.setFakeBoldText(false);
-        mPaint.setStyle(Paint.Style.FILL);
-        canvas.drawText("请选择难度级别", mLayoutWidth / 2, mEasyRectf.top - Padding * 2, mPaint);
-    }*/
+    //人物死亡
+    private void deadPerson(Canvas canvas) {
+        mPerson.setBitmap(bitmapd);
+        mPerson.mPersonY = 300;
+        mPerson.mPersonX = mLayoutWidth / 2;
+        mPerson.startAnimation(translate);
+//        Matrix matrix=new Matrix();
+//        matrix.setTranslate( mLayoutWidth / 2, mLayoutHeight - 2 * radius);
+//        canvas.drawBitmap(bitmapd,matrix,mPaint);
+//        for (int i = 0; i <= mLayoutHeight - 2 * radius; i++) {
+//            mPerson.mPersonY = i;
+//            mPerson.draw(canvas);
+//        }
+
+    }
 
     /**
      * 绘制结束弹出框的背景区域
@@ -359,8 +345,13 @@ public class GameLayout extends View {
         }
     }
 
-
+    //操作是否完成
     private boolean checkIsGameOver() {
+        if (mPerson.getBitmap().equals(bitmap1) || mPerson.getBitmap().equals(bitmap2) || mPerson.getBitmap().equals(bitmap3)) {
+            mPerson.setBitmap(bitmap1);
+        } else if (mPerson.getBitmap().equals(bitmap4) || mPerson.getBitmap().equals(bitmap5) || mPerson.getBitmap().equals(bitmap6)) {
+            mPerson.setBitmap(bitmap4);
+        }
         return mPerson.mPersonY < 0 || mPerson.mPersonY > mLayoutHeight - 2 * radius;
     }
 
@@ -401,7 +392,7 @@ public class GameLayout extends View {
                         //得分++
                         mTotalScore++;
 
-                        //小球碰撞位置--
+                        // 碰撞位置--
                         mTouchIndex--;
                     }
                     //这里应该是可以直接用postInvalidate()
@@ -429,42 +420,62 @@ public class GameLayout extends View {
         }
     }
 
+    //敌人移动
+    public void EnemyMove() {
+
+    }
+
     //控制小人向左移动
     public void moveLeft() {
-
-        int x = mPerson.mPersonX;
-        mPerson.setBitmap(bitmapl);
-        int dir = x - mPersonMoveSpeed;
-        if (dir < 0)
-            dir = 0;
-        mPerson.mPersonX = dir;
-        //移动过程中，启动边界检测,设置isAutoFall为true
-        checkIsOutSide(dir);
-        invalidate();
-
+        if (isRunning) {
+            int x = mPerson.mPersonX;
+            //mPerson.setBitmap(bitmapl);
+            if (mPerson.getBitmap().equals(bitmap4)) {
+                mPerson.setBitmap(bitmap5);
+            } else if (mPerson.getBitmap().equals(bitmap5)) {
+                mPerson.setBitmap(bitmap6);
+            } else {
+                mPerson.setBitmap(bitmap4);
+            }
+            int dir = x - mPersonMoveSpeed;
+            if (dir < 0)
+                dir = 0;
+            mPerson.mPersonX = dir;
+            //移动过程中，启动边界检测,设置isAutoFall为true
+            checkIsOutSide(dir);
+            invalidate();
+        }
     }
 
     /**
      * 类似moveLeft
      */
     public void moveRight() {
-        int x = mPerson.mPersonX;
-        mPerson.setBitmap(bitmapr);
-        int dir = x + mPersonMoveSpeed;
-        if (dir > mLayoutWidth - radius * 2)
-            dir = mLayoutWidth - radius * 2;
-        mPerson.mPersonX = dir;
-        checkIsOutSide(dir);
-        invalidate();
-
+        if (isRunning) {
+            int x = mPerson.mPersonX;
+            if (mPerson.getBitmap().equals(bitmap1)) {
+                mPerson.setBitmap(bitmap2);
+            } else if (mPerson.getBitmap().equals(bitmap2)) {
+                mPerson.setBitmap(bitmap3);
+            } else {
+                mPerson.setBitmap(bitmap1);
+            }
+            int dir = x + mPersonMoveSpeed;
+            if (dir > mLayoutWidth - radius * 2)
+                dir = mLayoutWidth - radius * 2;
+            mPerson.mPersonX = dir;
+            checkIsOutSide(dir);
+            invalidate();
+        }
     }
 
+    //移动超出板子
     private void checkIsOutSide(int x) {
         isAutoFall = true;
     }
 
     public void stop() {
-        //isReady = false;
+
         isRunning = false;
     }
 
