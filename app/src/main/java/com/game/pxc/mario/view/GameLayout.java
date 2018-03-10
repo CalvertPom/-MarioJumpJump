@@ -53,7 +53,6 @@ public class GameLayout extends View {
     private boolean isRunning;
 
 
-
     private Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.marios);
     private Bitmap bitmap4 = BitmapFactory.decodeResource(getResources(), R.drawable.mario4);//左
     private Bitmap bitmap5 = BitmapFactory.decodeResource(getResources(), R.drawable.mario5);//左
@@ -184,7 +183,7 @@ public class GameLayout extends View {
         //如果游戏结束
 
         if (!isRunning) {
-            deadPerson(canvas);
+            mPerson.setBitmap(bitmapd);
             //绘制面板
             drawPanel(canvas);
             //绘制游戏结束数字
@@ -195,21 +194,7 @@ public class GameLayout extends View {
         }
     }
 
-    //人物死亡
-    private void deadPerson(Canvas canvas) {
-        mPerson.setBitmap(bitmapd);
-        mPerson.mPersonY = 300;
-        mPerson.mPersonX = mLayoutWidth / 2;
-        mPerson.startAnimation(translate);
-//        Matrix matrix=new Matrix();
-//        matrix.setTranslate( mLayoutWidth / 2, mLayoutHeight - 2 * radius);
-//        canvas.drawBitmap(bitmapd,matrix,mPaint);
-//        for (int i = 0; i <= mLayoutHeight - 2 * radius; i++) {
-//            mPerson.mPersonY = i;
-//            mPerson.draw(canvas);
-//        }
 
-    }
 
     /**
      * 绘制结束弹出框的背景区域
