@@ -63,28 +63,16 @@ public class GameLayout extends View {
     //需要绘制的障碍
     private Bitmap bitplat;
     private Bitmap bitplatd;//加速
-    //需要绘制敌人
-    private Bitmap bitenemy;
     //当前的障碍物类型
     private int mType = 1;
     //画面中障碍物的位置信息
     private ArrayList<Integer> mBarrierXs;
     private ArrayList<Integer> mBarrierYs;
-    //画面中敌人的位置信息
-    private ArrayList<Integer> mEnemyXs;
-    private ArrayList<Integer> mEnemyYs;
     //画面中障碍物的类型信息
     private ArrayList<Integer> mBarrierTs;
     //障碍物起始和产生障碍的间隔
     private int mBarrierStartY = 500;
     private int mBarrierInterval = 500;
-    //敌人起始和产生敌人的间隔
-    private int mEnemyStartY = 500 - radius * 2;
-    private int mEnemyInterval = 500;
-    //敌人的高度
-    private int mEnemyHeight = 90;
-
-
     //障碍物的高度
     private int mBarrierHeight = 60;
     //人物所站立的障碍在画面中的index
@@ -128,10 +116,7 @@ public class GameLayout extends View {
         //读取障碍的图片
         bitplat = BitmapFactory.decodeResource(getResources(), R.drawable.plat);
         bitplatd = BitmapFactory.decodeResource(getResources(), R.drawable.dplat);
-
-        //读取敌人图片
-        bitenemy = BitmapFactory.decodeResource(getResources(), R.drawable.xier);
-        //默认开始自动下落
+    //默认开始自动下落
         isAutoFall = true;
         myHandler = new MyHandler();
         //用来记录画面中，每一个障碍物的x坐标
@@ -140,12 +125,6 @@ public class GameLayout extends View {
         mBarrierYs = new ArrayList<>();
         //用来记录画面中，每一个障碍物的类型
         mBarrierTs = new ArrayList<>();
-
-        //用来记录画面中，每一个敌人的x坐标
-        mEnemyXs = new ArrayList<>();
-        //和上面的x对应的每个敌人的y坐标
-        mEnemyYs = new ArrayList<>();
-
 
         //将文字大小转化成DP
         mTextSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, mTextSize, getResources().getDisplayMetrics());
@@ -379,7 +358,6 @@ public class GameLayout extends View {
             public void run() {
                 super.run();
                 while (isRunning) {
-                    //enemyTouch();
                     //开始让障碍往上面滚动,障碍物的绘制，是跟mBarrierStartY相关的
                     mBarrierStartY -= mBarrierMoveSpeed;
                     //当第一个障碍物开始消失
@@ -392,11 +370,6 @@ public class GameLayout extends View {
                         }
                         //得分++
                         mTotalScore++;
-
-                        if (mEnemyXs.size() > 0) {
-                            mEnemyYs.remove(0);
-                            mEnemyXs.remove(0);
-                        }
                         // 碰撞位置--
                         mTouchIndex--;
                     }
@@ -430,7 +403,6 @@ public class GameLayout extends View {
     public void moveLeft() {
         if (isRunning) {
             int x = mPerson.mPersonX;
-            //mPerson.setBitmap(bitmapl);
             if (mPerson.getBitmap().equals(bitmap4)) {
                 mPerson.setBitmap(bitmap5);
             } else if (mPerson.getBitmap().equals(bitmap5)) {
@@ -494,10 +466,8 @@ public class GameLayout extends View {
                     restartGame();
                 } else if (mQuiteRectf.contains(x, y)) {//触摸到退出按钮
                     System.exit(0);
-
                 }
                 break;
-
         }
         return super.onTouchEvent(event);
     }
