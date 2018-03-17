@@ -11,17 +11,12 @@ public class Person {
     public static final int SPEED = 10;
     private int mHeaderRadius;
     private Paint mPaint;
-
-
-
     //下边缘坐标
     public int mPersonY;
     public int mPersonX;
-
     public void setmPersonY(int mPersonY) {
         this.mPersonY = mPersonY;
     }
-
     private Bitmap bitmap;
     public Bitmap getBitmap() {
         return bitmap;
@@ -45,10 +40,8 @@ public class Person {
         canvas.save();
         Path path = new Path();
         path.addCircle(mPersonX + mHeaderRadius, mPersonY + mHeaderRadius, mHeaderRadius*3, Path.Direction.CCW);
-
         canvas.clipPath(path);
         canvas.drawBitmap(bitmap, null, new RectF(mPersonX, mPersonY, mPersonX +   mHeaderRadius*7/6, mPersonY + mHeaderRadius * 5/3), mPaint);
-
         canvas.restore();
     }
 
