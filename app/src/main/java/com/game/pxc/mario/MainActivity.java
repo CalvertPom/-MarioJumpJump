@@ -9,13 +9,9 @@ import com.game.pxc.mario.view.GameLayout;
 
 public class MainActivity extends AppCompatActivity {
     private GameLayout mGameLayout;
-
-
 //    private View left;
 //    private View right;
 //    private View mus;
-
-
 //    private boolean isMus = false;
 
     @Override

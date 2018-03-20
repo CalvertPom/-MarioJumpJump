@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.game.pxc.mario.R;
+import com.game.pxc.mario.util.Music;
 import com.game.pxc.mario.util.PositionUtil;
 
 import java.util.ArrayList;
@@ -34,6 +35,8 @@ public class GameLayout extends View {
     private Score mScore;
     //画笔
     private Paint mPaint;
+
+
     //小人的圆形半径
     private int radius = 50;
     //不断绘制的线程
@@ -103,6 +106,23 @@ public class GameLayout extends View {
     private int Padding = 20;
 
 
+    //屏幕密度
+    private float density = getResources().getDisplayMetrics().density;
+    //音乐对象
+    private Music bgm;
+    //音乐暂停
+    //暂停按钮的对象
+    private RectF mBBPRectf;
+    private Anniu mButtonbgmPause;
+    //暂停图标
+    private Bitmap stopm = BitmapFactory.decodeResource(getResources(), R.drawable.startm);//暂停状态
+    private Bitmap startm = BitmapFactory.decodeResource(getResources(), R.drawable.stopm);//播放状态
+    //音乐状态
+    public static final int STATUS_BGM_STARTED = 1;//音乐开始
+    public static final int STATUS_BGM_PAUSED = 2;//音乐暂停
+    public static final int STATUS_BGM_STILL = 3;//音乐在播
+    private int status = STATUS_BGM_STARTED;//初始为音乐开始状态
+
     public GameLayout(Context context) {
         super(context);
         init();
@@ -121,7 +141,7 @@ public class GameLayout extends View {
         mPaint.setStrokeWidth(10);
         //读取障碍的图片
         bitplat = BitmapFactory.decodeResource(getResources(), R.drawable.plat);
-        bitplatd = BitmapFactory.decodeResource(getResources(), R.drawable.dplat);
+        bitplatd = BitmapFactory.decodeResource(getResources(), R.drawable.acc);
         //默认开始自动下落
         isAutoFall = true;
         myHandler = new MyHandler();
@@ -131,7 +151,6 @@ public class GameLayout extends View {
         mBarrierYs = new ArrayList<>();
         //用来记录画面中，每一个障碍物的类型
         mBarrierTs = new ArrayList<>();
-
         //将文字大小转化成DP
         mTextSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, mTextSize, getResources().getDisplayMetrics());
         //启动游戏
@@ -155,6 +174,10 @@ public class GameLayout extends View {
         mPerson.mPersonY = 300;
         mPerson.mPersonX = mLayoutWidth / 2;
 
+        //绘制左上角的暂停按钮
+
+        mButtonbgmPause = new Anniu(mPaint, startm);
+        mBBPRectf = new RectF(15 * density, 15 * density, 15 * density + mButtonbgmPause.bWidth, 15 * density + mButtonbgmPause.bHeight);
 
         //初始化地形对象
         mSpike = new Spike(mLayoutWidth, mPaint, bSpike);//顶上刺
@@ -186,6 +209,7 @@ public class GameLayout extends View {
         generateScore(canvas);
         //绘制障碍物
         generateBarrier(canvas);
+        drawbBGM(canvas);
         //如果小人正在下落，才检测是否碰撞
         if (isAutoFall)
             checkTouch();
@@ -207,7 +231,14 @@ public class GameLayout extends View {
             drawButton(canvas, mQuiteRectf, "退出", Color.parseColor("#ae999999"), Color.WHITE);
         }
     }
-
+//绘制bgm按钮
+    private void drawbBGM(Canvas canvas) {
+        mPaint.setStyle(Paint.Style.FILL);
+        mPaint.setColor(Color.DKGRAY);
+        mButtonbgmPause.bX = 15 * density;
+        mButtonbgmPause.bY = 15 * density;
+        mButtonbgmPause.draw(canvas);
+    }
 
     /**
      * 绘制结束弹出框的背景区域
@@ -381,12 +412,32 @@ public class GameLayout extends View {
         return res;
     }
 
+    private void initbgm() {
+        bgm.play(getContext(), R.raw.bgm4);
+        status = STATUS_BGM_STILL;
+    }
+
+    private void bgmStart() {
+        mButtonbgmPause.setBitmap(startm);
+        bgm.play(getContext(), R.raw.bgm4);
+        status = STATUS_BGM_STILL;//=3;//音乐在播
+    }
+
+    private void bgmStop() {
+        mButtonbgmPause.setBitmap(stopm);
+        bgm.stop(getContext());
+        status = STATUS_BGM_PAUSED;
+    }
 
     public void startGame() {
         mThread = new Thread() {
             @Override
             public void run() {
                 super.run();
+                if (status == STATUS_BGM_STARTED)//音乐开始
+                {
+                    initbgm();
+                }
                 while (isRunning) {
                     //开始让障碍往上面滚动,障碍物的绘制，是跟mBarrierStartY相关的
                     mBarrierStartY -= mBarrierMoveSpeed;
@@ -494,6 +545,14 @@ public class GameLayout extends View {
             //获取触摸位置信息
             downx = event.getX();
             downy = event.getY();
+            if (mBBPRectf.contains(downx, downy)) {
+                if (status == STATUS_BGM_PAUSED)//音乐开始
+                {
+                    bgmStart();
+                } else if (status == STATUS_BGM_STILL) {
+                    bgmStop();
+                }
+            }
             if (isRunning) {
                 if (mLayoutWidth / 2 - downx > 0) {
                     moveLeft();
@@ -521,6 +580,7 @@ public class GameLayout extends View {
                 moveRight();
             }
         }
+
         return true;
         // return super.onTouchEvent(event);
     }
