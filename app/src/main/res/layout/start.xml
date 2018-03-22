@@ -1,33 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout1"
+    android:layout_width="match_parent"
     android:layout_gravity="center"
-    android:orientation="vertical"
-    android:id="@+id/linearLayout1">
-    <scut.carson_ho.kawaii_loadingview.Kawaii_LoadingView
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:orientation="vertical">
 
-        android:id="@+id/Kawaii_LoadingView"
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-
-        android:background="#EEEE00"
-        app:blockColor="#EE0000"
-
-        app:lineNumber="3"
-        app:fixBlock_Angle="5"
-        app:moveBlock_Angle="20"
-
-        app:blockInterval="8dp"
-        app:half_BlockWidth="15dp"
-        app:initPosition="0"
-
-        app:isClock_Wise="false"
-        app:moveSpeed="600"
-        app:move_Interpolator="@android:anim/bounce_interpolator"
-
-        tools:layout_editor_absoluteY="8dp"
-        tools:layout_editor_absoluteX="8dp" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="勇闯地牢背景故事"
+        android:textColor="@color/w"
+        android:textSize="40dp" />
+    <Button android:id="@+id/pass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="跳过"/>
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gif1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </LinearLayout>

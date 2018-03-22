@@ -6,11 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
-import android.widget.Toast;
-import scut.carson_ho.kawaii_loadingview.Kawaii_LoadingView;
+import android.widget.Button;
+
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
 public class StartActivity extends AppCompatActivity {
-    private Kawaii_LoadingView Kawaii_LoadingView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,26 +20,30 @@ public class StartActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.start);
-        //开场动画控件
-        Kawaii_LoadingView = (Kawaii_LoadingView) findViewById(R.id.Kawaii_LoadingView);
-        //  启动动画
-        Kawaii_LoadingView.startMoving();
+        GifImageView gifImageView1 = (GifImageView) findViewById(R.id.gif1);
 
-        LinearLayout ll = (LinearLayout) findViewById(R.id.linearLayout1);    //获取线性布局管理器
-        Toast.makeText(this, "触摸屏幕跳过...", Toast.LENGTH_SHORT).show();    //显示一个消息提示框
-        ll.setOnClickListener(new View.OnClickListener() {
+        try {
+            // 如果加载的是gif动图，第一步需要先将gif动图资源转化为GifDrawable
+            // 将gif图资源转化为GifDrawable
+            GifDrawable gifDrawable = new GifDrawable(getResources(), R.drawable.backgroudstory);
+
+            // gif1加载一个动态图gif
+            gifImageView1.setImageDrawable(gifDrawable);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Button button=(Button) findViewById(R.id.pass);
+
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Kawaii_LoadingView.stopMoving();
-                finish();
                 Intent intent = new Intent(StartActivity.this, MainActivity.class);
                 startActivity(intent);
+                finish();
 
             }
 
         });
-
-
     }
 }
