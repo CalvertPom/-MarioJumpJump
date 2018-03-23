@@ -21,6 +21,8 @@ public class Barrier {
     //private int mType;
     //障碍物的宽度
     private int mWidth;
+
+
     //障碍物的高度
     private int mHeight;
     //屏幕的宽度
@@ -40,6 +42,7 @@ public class Barrier {
         this.mWidth = mScreenWidth / 4;
         this.bitmap = bitmap;
     }
+
     /**
      * 绘制一个黑色矩形
      */
@@ -55,6 +58,10 @@ public class Barrier {
 
     public void setHeight(int mHeight) {
         this.mHeight = mHeight;
+    }
+
+    public int getmHeight() {
+        return mHeight;
     }
 
     public int getWidth() {
