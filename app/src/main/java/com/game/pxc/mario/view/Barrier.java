@@ -42,7 +42,9 @@ public class Barrier {
         this.mWidth = mScreenWidth / 4;
         this.bitmap = bitmap;
     }
-
+    public void destroy(){
+        bitmap = null;
+    }
     /**
      * 绘制一个黑色矩形
      */

@@ -28,7 +28,9 @@ public class Person {
     }
 
 
-
+    public void destroy(){
+        bitmap = null;
+    }
     /**
      * 绘制一个圆形图片
      */

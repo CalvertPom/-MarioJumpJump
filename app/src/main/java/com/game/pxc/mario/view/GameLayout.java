@@ -35,8 +35,6 @@ public class GameLayout extends View {
     private Score mScore;
     //画笔
     private Paint mPaint;
-
-
     //小人的圆形半径
     private int radius = 50;
     //不断绘制的线程
@@ -44,22 +42,15 @@ public class GameLayout extends View {
     private MyHandler myHandler;
     //障碍上升加速度
     private int mBarrierMoveSpeed = 10;//8简单10普通12难15炼狱
-
     //地形
     private Spike mSpike;//顶上刺
-    //private Hellfire mHellfire;//地狱火
     private Bitmap bSpike = BitmapFactory.decodeResource(getResources(), R.drawable.up);//顶上刺
-    private Bitmap bHellfire = BitmapFactory.decodeResource(getResources(), R.drawable.down);//地狱火
-
     //人物是否自动下落状态
     private boolean isAutoFall;
     //人物左右移动的速度
     private int mPersonMoveSpeed = 10;
-
     //游戏是否正在运行
     private boolean isRunning;
-
-
     private Bitmap bmans = BitmapFactory.decodeResource(getResources(), R.drawable.jerryd1);
     private Bitmap bmanl1 = BitmapFactory.decodeResource(getResources(), R.drawable.jerryl1);//左
     private Bitmap bmanl2 = BitmapFactory.decodeResource(getResources(), R.drawable.jerryl2);//左
@@ -89,7 +80,6 @@ public class GameLayout extends View {
     private int mTouchIndex = -1;
     //当小人自动下落瞬间，开始计时，单位毫秒
     private float mFallTime = 0;
-
     //重力加速度
     public static final float G = 9.8f;
     //特殊砖加速
@@ -98,7 +88,6 @@ public class GameLayout extends View {
     private int mTotalScore;
     //份数版块的文字大小
     private int mTextSize = 16;
-
     //失败后，弹出的菜单，按钮的位置
     private RectF mRestartRectf;
     private RectF mQuiteRectf;
@@ -106,8 +95,6 @@ public class GameLayout extends View {
     private int mButtonWidth = 300;
     private int mButtonHeight = 120;
     private int Padding = 20;
-
-
     //屏幕密度
     private float density = getResources().getDisplayMetrics().density;
     //音乐对象
@@ -124,17 +111,14 @@ public class GameLayout extends View {
     public static final int STATUS_BGM_PAUSED = 2;//音乐暂停
     public static final int STATUS_BGM_STILL = 3;//音乐在播
     private int status = STATUS_BGM_STARTED;//初始为音乐开始状态
-
     public GameLayout(Context context) {
         super(context);
         init();
     }
-
     public GameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
-
     private void init() {
         //初始化画笔
         mPaint = new Paint();
@@ -159,7 +143,6 @@ public class GameLayout extends View {
         isRunning = true;
         startGame();
     }
-
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -249,7 +232,7 @@ public class GameLayout extends View {
     private void drawPanel(Canvas canvas) {
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         mPaint.setColor(Color.parseColor("#8e333333"));
-        canvas.drawRoundRect(new RectF(mRestartRectf.left - Padding * 2, mLayoutHeight * 2 / 5 - Padding, mQuiteRectf.right + Padding * 2, mQuiteRectf.bottom + Padding), Padding, Padding, mPaint);
+        canvas.drawRoundRect(new RectF(mRestartRectf.left - Padding * 5/2, mLayoutHeight * 2 / 5 - Padding, mQuiteRectf.right + Padding *5/2, mQuiteRectf.bottom + Padding), Padding, Padding, mPaint);
     }
 
     /**
@@ -261,9 +244,11 @@ public class GameLayout extends View {
         mPaint.setTextSize(mTextSize * 1.5f);
         mPaint.setColor(Color.parseColor("#cc0000"));
         mPaint.setFakeBoldText(false);
+        mPaint.setStrokeWidth(3);
         mPaint.setAntiAlias(true);//设置抗锯齿，否则斜线等会有锯齿
         mPaint.setSubpixelText(true);//设置亚像素，可以让文字更加清晰明显，对文本设置的一种优化
-        canvas.drawText("Game over", mLayoutWidth / 2, mLayoutHeight / 2, mPaint);
+        canvas.drawText("游戏结束！！！" , mLayoutWidth / 2, mLayoutHeight / 2, mPaint);
+        canvas.drawText("您本次的得分为:"+mTotalScore+"分", mLayoutWidth / 2, mLayoutHeight / 2+mTextSize * 1.5f, mPaint);
     }
 
     //绘制菜单按钮,下面的操作使得文字能够居中显示
@@ -403,12 +388,12 @@ public class GameLayout extends View {
      */
     private boolean isTouchBarrier(int x, int y) {
         boolean res = false;
-        double pY = mPerson.mPersonY + radius * 5/3;
+        double pY = mPerson.mPersonY + radius * 5 / 3;
         //在瞬间刷新的时候，只要小人的位置和障碍的位置，差值在小人和障碍物的瞬间刷新的最大值就属于碰撞
         //比如：小人下落速度为a,障碍物上升速度为b,画面刷新时间为t,瞬间刷新，会有个最大差值，这个值就是
         //临界值
-        if (Math.abs(pY - y) <= Math.abs(mBarrierMoveSpeed+mBarrier.getmHeight() + Person.SPEED + mFallTime / 1000 * G)) {
-            if (mPerson.mPersonX + radius * 7/6 >= x && mPerson.mPersonX <= x + mBarrier.getWidth()) {
+        if (Math.abs(pY - y) <= Math.abs(mBarrierMoveSpeed + mBarrier.getmHeight() + Person.SPEED + mFallTime / 1000 * G)) {
+            if (mPerson.mPersonX + radius * 7 / 6 >= x && mPerson.mPersonX <= x + mBarrier.getWidth()) {
                 res = true;
             }
         }
@@ -539,6 +524,43 @@ public class GameLayout extends View {
         isRunning = false;
     }
 
+    //游戏销毁清空资源
+    public void destory() {
+        stop();
+        bgmStop();
+        mTotalScore = 0;
+        isAutoFall = false;
+        acc = 0;
+        mFallTime = 0;
+        mBarrierXs.clear();
+        mBarrierYs.clear();
+        mBarrierTs.clear();
+        mBarrierStartY = 500;
+        if (mPerson != null) {
+            mPerson.destroy();
+        }
+        if (mBarrier != null) {
+            mBarrier.destroy();
+        }
+        mPerson = null;
+        mBarrier = null;
+        bmans.recycle();
+        bmanl1.recycle();
+        bmanl2.recycle();
+        bmanl3.recycle();
+        bmanl4.recycle();
+        bmanr1.recycle();
+        bmanr2.recycle();
+        bmanr3.recycle();
+        bmanr4.recycle();
+        bmand.recycle();
+        bSpike.recycle();
+        bitplat.recycle();
+        bitplatd.recycle();
+        mThread.interrupt();
+        mThread=null;
+        System.exit(0);
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -573,7 +595,8 @@ public class GameLayout extends View {
                 if (mRestartRectf.contains(downx, downy)) {
                     restartGame();
                 } else if (mQuiteRectf.contains(downx, downy)) {//触摸到退出按钮
-                    System.exit(0);
+                    //System.exit(0);
+                    android.os.Process.killProcess(android.os.Process.myPid());
                 }
             }
         }
