@@ -20,8 +20,9 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:theme="@style/TouminTheme"></activity>
-        <activity android:name=".MenuActivity"></activity>
+            android:theme="@style/TouminTheme" />
+        <activity android:name=".MenuActivity" />
+        <activity android:name=".ScoreActivity"></activity>
     </application>
 
 </manifest>

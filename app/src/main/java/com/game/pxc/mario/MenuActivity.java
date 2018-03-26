@@ -27,11 +27,11 @@ public class MenuActivity extends AppCompatActivity {
             }
 
         });
-        game.setOnClickListener(new View.OnClickListener() {
+        date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(MenuActivity.this, MainActivity.class);
+                Intent intent = new Intent(MenuActivity.this, ScoreActivity.class);
                 startActivity(intent);
                 finish();
 

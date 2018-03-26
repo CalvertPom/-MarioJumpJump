@@ -13,8 +13,11 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.game.pxc.mario.R;
+import com.game.pxc.mario.dao.ScoreDao;
+import com.game.pxc.mario.model.Tb_score;
 import com.game.pxc.mario.util.Music;
 import com.game.pxc.mario.util.PositionUtil;
 
@@ -86,6 +89,8 @@ public class GameLayout extends View {
     int acc = 0;
     //总得分
     private int mTotalScore;
+    //是否记录得分
+    private  boolean isScore;
     //份数版块的文字大小
     private int mTextSize = 16;
     //失败后，弹出的菜单，按钮的位置
@@ -111,14 +116,17 @@ public class GameLayout extends View {
     public static final int STATUS_BGM_PAUSED = 2;//音乐暂停
     public static final int STATUS_BGM_STILL = 3;//音乐在播
     private int status = STATUS_BGM_STARTED;//初始为音乐开始状态
+
     public GameLayout(Context context) {
         super(context);
         init();
     }
+
     public GameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
+
     private void init() {
         //初始化画笔
         mPaint = new Paint();
@@ -141,6 +149,7 @@ public class GameLayout extends View {
         mTextSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, mTextSize, getResources().getDisplayMetrics());
         //启动游戏
         isRunning = true;
+        isScore=false;
         startGame();
     }
 
@@ -232,7 +241,7 @@ public class GameLayout extends View {
     private void drawPanel(Canvas canvas) {
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         mPaint.setColor(Color.parseColor("#8e333333"));
-        canvas.drawRoundRect(new RectF(mRestartRectf.left - Padding * 5/2, mLayoutHeight * 2 / 5 - Padding, mQuiteRectf.right + Padding *5/2, mQuiteRectf.bottom + Padding), Padding, Padding, mPaint);
+        canvas.drawRoundRect(new RectF(mRestartRectf.left - Padding * 5 / 2, mLayoutHeight * 2 / 5 - Padding, mQuiteRectf.right + Padding * 5 / 2, mQuiteRectf.bottom + Padding), Padding, Padding, mPaint);
     }
 
     /**
@@ -247,8 +256,32 @@ public class GameLayout extends View {
         mPaint.setStrokeWidth(3);
         mPaint.setAntiAlias(true);//设置抗锯齿，否则斜线等会有锯齿
         mPaint.setSubpixelText(true);//设置亚像素，可以让文字更加清晰明显，对文本设置的一种优化
-        canvas.drawText("游戏结束！！！" , mLayoutWidth / 2, mLayoutHeight / 2, mPaint);
-        canvas.drawText("您本次的得分为:"+mTotalScore+"分", mLayoutWidth / 2, mLayoutHeight / 2+mTextSize * 1.5f, mPaint);
+        canvas.drawText("游戏结束！！！", mLayoutWidth / 2, mLayoutHeight / 2, mPaint);
+        canvas.drawText("您本次的得分为:" + mTotalScore + "分", mLayoutWidth / 2, mLayoutHeight / 2 + mTextSize * 1.5f, mPaint);
+        String strInScore = String.valueOf(mTotalScore);
+        if (!strInScore.isEmpty()&&isScore==false) {// 判断分数不为空
+            // 创建InaccountDAO对象
+            ScoreDao scoreDAO = new ScoreDao(
+                    getContext());
+            // 创建Tb_inaccount对象
+            Tb_score tb_score = new Tb_score(scoreDAO.getMaxId() + 1, Integer.parseInt(strInScore));
+            scoreDAO.add(tb_score);// 添加本次得分信息
+            isScore=true;
+            // 弹出信息提示
+            Toast.makeText(getContext(), "〖新增分数〗数据添加成功！",
+                    Toast.LENGTH_SHORT).show();
+
+        }
+      /*  Time t=new Time(); // or Time t=new Time("GMT+8"); 加上Time Zone资料。
+        t.setToNow(); // 取得系统时间。
+        int year = t.year;
+        int month = t.month;
+        int day = t.monthDay;
+        int hour = t.hour; // 0-23
+        int minute = t.minute;
+        int second = t.second;
+        canvas.drawText(year+"-" +month+"-" +day+"-" +hour+"-" +minute+"-" +second, mLayoutWidth / 2, mLayoutHeight / 2+mTextSize * 1.5f+mTextSize * 1.5f, mPaint);
+  */
     }
 
     //绘制菜单按钮,下面的操作使得文字能够居中显示
@@ -558,7 +591,7 @@ public class GameLayout extends View {
         bitplat.recycle();
         bitplatd.recycle();
         mThread.interrupt();
-        mThread=null;
+        mThread = null;
         System.exit(0);
     }
 
@@ -631,6 +664,7 @@ public class GameLayout extends View {
         acc = 0;
         mFallTime = 0;
         isRunning = true;
+        isScore=false;
         startGame();
     }
 }
