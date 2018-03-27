@@ -1,21 +1,14 @@
 package com.game.pxc.mario.model;
-/**
+import org.litepal.crud.DataSupport;
+/*
  * 分数实体类
  */
 
-public class Tb_score {
+public class TbScore extends DataSupport {
     private int _id;//存储分数编号
     private int score;//存储获得分数值
+    private String time;//存储获得分数的时间
 
-
-    public  Tb_score() {
-        super();
-    }
-    public Tb_score(int id,int score ){
-        super();
-        this._id=id;
-        this.score=score;
-    }
     public int get_id() {
         return _id;
     }
@@ -32,5 +25,11 @@ public class Tb_score {
         this.score = score;
     }
 
+    public String getTime() {
+        return time;
+    }
 
+    public void setTime(String time) {
+        this.time = time;
+    }
 }

@@ -8,6 +8,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import org.litepal.tablemanager.Connector;
+
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 public class StartActivity extends AppCompatActivity {
@@ -20,6 +22,8 @@ public class StartActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.start);
+       //数据库
+        Connector.getDatabase();
         GifImageView gifImageView1 = (GifImageView) findViewById(R.id.gif1);
 
         try {

@@ -16,12 +16,16 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.game.pxc.mario.R;
-import com.game.pxc.mario.dao.ScoreDao;
-import com.game.pxc.mario.model.Tb_score;
+import com.game.pxc.mario.model.TbScore;
 import com.game.pxc.mario.util.Music;
 import com.game.pxc.mario.util.PositionUtil;
 
+import org.litepal.crud.DataSupport;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 游戏布局
@@ -260,30 +264,31 @@ public class GameLayout extends View {
         canvas.drawText("您本次的得分为:" + mTotalScore + "分", mLayoutWidth / 2, mLayoutHeight / 2 + mTextSize * 1.5f, mPaint);
         String strInScore = String.valueOf(mTotalScore);
         if (!strInScore.isEmpty()&&isScore==false) {// 判断分数不为空
-            // 创建InaccountDAO对象
-            ScoreDao scoreDAO = new ScoreDao(
-                    getContext());
-            // 创建Tb_inaccount对象
-            Tb_score tb_score = new Tb_score(scoreDAO.getMaxId() + 1, Integer.parseInt(strInScore));
-            scoreDAO.add(tb_score);// 添加本次得分信息
+           // scoreDAO.add(tb_score);// 添加本次得分信息
+            TbScore tbscore = new TbScore();
+            tbscore.setScore(Integer.parseInt(strInScore));
+            tbscore.setTime(getSysNowTime());
+            tbscore.save();
             isScore=true;
             // 弹出信息提示
             Toast.makeText(getContext(), "〖新增分数〗数据添加成功！",
                     Toast.LENGTH_SHORT).show();
-
         }
-      /*  Time t=new Time(); // or Time t=new Time("GMT+8"); 加上Time Zone资料。
-        t.setToNow(); // 取得系统时间。
-        int year = t.year;
-        int month = t.month;
-        int day = t.monthDay;
-        int hour = t.hour; // 0-23
-        int minute = t.minute;
-        int second = t.second;
-        canvas.drawText(year+"-" +month+"-" +day+"-" +hour+"-" +minute+"-" +second, mLayoutWidth / 2, mLayoutHeight / 2+mTextSize * 1.5f+mTextSize * 1.5f, mPaint);
-  */
+        String[] strInfos = null;// 定义字符串数组，用来存储分数信息
+// 获取所有分数信息，并存储到List泛型集合中
+        List<TbScore> listinfos = DataSupport.order("score desc").find(TbScore.class);
+        strInfos = new String[listinfos.size()];// 设置字符串数组的长度
+        int m = 0;// 定义一个开始标识
+        for (TbScore tb_score : listinfos) {// 遍历List泛型集合
+            strInfos[m] =String.valueOf(tb_score.getScore());
+            m++;// 标识加1
+        }
+        canvas.drawText("历史最高成绩:" + strInfos[0] + "分", mLayoutWidth / 2, mLayoutHeight / 2 + mTextSize * 3f, mPaint);
     }
-
+    // 获取现在系统时间
+    public String getSysNowTime() {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+    }
     //绘制菜单按钮,下面的操作使得文字能够居中显示
     private void drawButton(Canvas canvas, RectF rectF, String text, int strokeColor, int textColor) {
         mPaint.setStyle(Paint.Style.FILL);
